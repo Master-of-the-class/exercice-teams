@@ -22,7 +22,6 @@ const userId = "test_eleve_1";
 
 const champs = ["octobre", "visiter", "abandonne"];
 
-/* sauvegarde */
 function sauvegarder() {
 
   const data = {};
@@ -31,7 +30,11 @@ function sauvegarder() {
     data[id] = document.getElementById(id).value;
   });
 
-  db.collection("reponses").doc(userId).set(data);
+  db.collection("reponses").doc(userId).set(data)
+    .then(() => {
+      document.getElementById("status").textContent =
+        "Sauvegardé ✔";
+    });
 }
 
 /* chargement */
