@@ -1,38 +1,58 @@
-const champs = [
-    "octobre",
-    "visiter",
-    "abandonne"
-];
+const firebaseConfig = {
 
+  apiKey: "AIzaSyCFI1xPuEuXmh9bfeD8iHsgItD-cmLQVCE",
+
+  authDomain: "exercice-teams.firebaseapp.com",
+
+  projectId: "exercice-teams",
+
+  storageBucket: "exercice-teams.firebasestorage.app",
+
+  messagingSenderId: "817582067292",
+
+  appId: "1:817582067292:web:5e9b276431e6adffe9a099"
+
+};
+
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+const userId = "test_eleve_1";
+
+const champs = ["octobre", "visiter", "abandonne"];
+
+/* sauvegarde */
 function sauvegarder() {
 
-    champs.forEach(id => {
+  const data = {};
 
-        localStorage.setItem(
-            id,
-            document.getElementById(id).value
-        );
-    });
+  champs.forEach(id => {
+    data[id] = document.getElementById(id).value;
+  });
 
-    document.getElementById("status").innerText =
-        "Sauvegardé automatiquement";
+  db.collection("reponses").doc(userId).set(data);
 }
 
+/* chargement */
 function charger() {
 
-    champs.forEach(id => {
+  db.collection("reponses").doc(userId).get().then(doc => {
 
-        const valeur = localStorage.getItem(id);
+    if (doc.exists) {
 
-        if (valeur) {
+      const data = doc.data();
 
-            document.getElementById(id).value = valeur;
-        }
-
-        document
-            .getElementById(id)
-            .addEventListener("input", sauvegarder);
-    });
+      champs.forEach(id => {
+        document.getElementById(id).value = data[id] || "";
+      });
+    }
+  });
 }
+
+/* écoute */
+champs.forEach(id => {
+  document.getElementById(id).addEventListener("input", sauvegarder);
+});
 
 charger();
